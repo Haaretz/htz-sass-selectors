@@ -5,5 +5,9 @@
   "main": "index.scss",
   "author": "TxHawks",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haaretz/htz-sass-selectors.git"
+  },
   "private": false
 }
