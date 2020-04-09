@@ -1,0 +1,248 @@
+/// The prefix added to classes and custom properties
+/// @type {string}
+$selector-prefix: '' !default;
+/// The separator used for BEM child elements
+/// @type {string}
+$element-separator: '__' !default;
+/// The separator used for BEM modifiers
+/// @type {string}
+$modifier-separator: '--' !default;
+/// The default prefix for state classes
+/// @type {string}
+$state-prefix: 'is' !default;
+/// Should state classes be added as qualifiers like in SMACSS
+/// (e.g., `.base-class.is-state`) this increasing specificity
+/// or as a single class like in classic BEM (e.g. `.base-class--is-state`)
+/// thus retaining flatters specificity.
+/// @type {boolean}
+$qualify-state: true !default;
+
+////////////////////////////////////////////////////////////////////////
+//                     Prefixed Custom Properties                     //
+////////////////////////////////////////////////////////////////////////
+
+/// Create a prefixed custom property
+/// ---
+/// Create custom properties that are prefixed to avoid name
+/// collusion but without the syntactic verbosity of repeatedly doing:
+/// --#{$selector-prefix}variable-name: variable-value;
+/// @param {String} $name
+///   The custom-property's name
+/// @param {any} $value
+///   The value assigned to the custom-property
+/// ---
+/// @example
+/// .foo {
+///   @include create-var(primary, red);
+/// }
+/// // Assuming `$selector-prefix: p-`, will generate:
+/// // .foo { --p-primary: red; }
+@mixin create-var($name, $value) {
+  --#{$selector-prefix}#{$name}: #{$value};
+}
+
+/// Use a prefixed custom properties to avoid name collusion
+/// but without the syntactic verbosity of repeatedly doing:
+/// color: var(--#{$selector-prefix}color1);
+/// ---
+/// @param {String} $name
+///   The _unprefixed_ name of the variable to use. Usually one defined
+///   using the `css-var` mixin.
+/// ---
+/// @return {String} Prefixed custom property reference
+/// ---
+/// @example
+/// .foo {
+///   color: use-var(primary);
+/// }
+/// // Assuming `$selector-prefix: p-`, will generate:
+/// // .foo { color: var(--p-primary); }
+@function use-var($name) {
+  @return var(--#{$selector-prefix}#{$name});
+}
+
+////////////////////////////////////////////////////////////////////////
+//                            BEM Helpers                             //
+//                   create idiomatic Bem hierarchy                   //
+////////////////////////////////////////////////////////////////////////
+/// Create a prefixed class selector
+/// ---
+/// Create class selectors that are prefixed to avoid name
+/// collusion but without the syntactic verbosity of repeatedly doing:
+/// .#{$selector-prefix}name { ... }.
+///
+/// Can be used to create any class, but designed chiefly to be used as
+/// an idiomatic way to create `BEM` block rulesets (hense, aliased as `b`)
+/// ---
+/// @param {arglist} $names
+///   Unprefixed class name(s) to create the selector from
+/// ---
+/// @example
+/// // Single class:
+/// @include class(foo) { color: red; }
+/// // Assuming `$selector-prefix: p-`, will generate:
+/// // .p-foo { color: red; }
+///
+/// @example
+/// // Multiple class:
+/// @include class(foo, bar) { color: red; }
+/// // Assuming `$selector-prefix: p-`, will generate:
+/// // .p-foo, .p-bar { color: red; }
+///
+/// @example
+/// // Scoped:
+/// .scope {
+///   @include class(foo) { color: red; }
+/// }
+/// // Assuming `$selector-prefix: p-`, will generate:
+/// // .scope {.p-foo { color: red; } }
+/// ---
+/// @alias b
+/// ---
+/// @see {variable} $selector-prefix
+@mixin class($names...) {
+  $prefixed-selectors: ();
+
+  @each $name in $names {
+    $prefixed-selector: unquote('.#{$selector-prefix}#{$name}');
+    $prefixed-selectors: append($prefixed-selectors, $prefixed-selector, comma);
+  }
+
+  #{$prefixed-selectors} {
+    @content;
+  }
+}
+
+// `b` for block in BEM.
+// An alias of the `@include class()` mixin
+@mixin b($names...) {
+  @include class($names...) { @content; }
+}
+
+/// Idiomatically create BEM element rulesets
+/// Can be nested inside modifiers or other elements to infinite depth
+/// ---
+/// @param {string} $name
+///   The element's name
+/// ---
+/// @example
+/// @include b(block) {
+///   ...
+///   @include e(element) { ... } // -> .block__element { ... }
+/// }
+/// ---
+/// @alias element
+/// ---
+/// @see {variable} $element-separator
+@mixin e($name) {
+  @at-root {
+    &#{$element-separator}#{$name} {
+      @content;
+    }
+  }
+}
+// An alias of the `@include e()` mixin
+@mixin element($name) {
+  @include e($name) { @content }
+}
+
+/// Idiomatically create BEM modifier rulesets
+/// Can be nested inside elements or other modifiers to infinite depth
+/// ---
+/// @param {string} $name
+///   The modifier's name
+/// ---
+/// @example
+/// @include b(block) {
+///   ...
+///   @include m(mod) { ... } // -> .block--mod { ... }
+/// }
+/// @alias modifier
+/// ---
+/// @see {variable} $modifier-separator
+@mixin m($name) {
+  @at-root {
+    &#{$modifier-separator}#{$name} {
+      @content;
+    }
+  }
+}
+// An alias of the `include m()` mixin
+@mixin modifier($name) {
+  @include m($name) { @content }
+}
+
+/// Idiomatically create state qualifier classes of a parent selector
+/// ---
+/// @param {string} $state
+///   The represented state
+/// @param {string} $prefix [$state-prefix]
+///   The string to use when prefixing `$state`,
+///   e.g, `@include is(open, is) { ... }` will create an `.is-open`
+///   qualifier.
+/// @param {boolean} $qualify [$qualify-state]
+///   Should state classes be added as qualifiers like in SMACSS
+///   (e.g., `.base-class.is-state`) thus increasing specificity
+///   or as a single class like in classic BEM (e.g. `.base-class--is-state`)
+///   thus retaining flatters specificity.
+/// ---
+/// @example
+/// html {
+///   ...
+///   @include is(app) { ... } // -> .html.is-app { ... }
+/// }
+/// ---
+/// @alias state
+/// ---
+/// @see {variable} $state-prefix
+/// @see {variable} $qualify-state
+@mixin is($state, $prefix: $state-prefix, $qualify: $qualify-state) {
+  @if $qualify == true {
+    @at-root {
+      &.#{$prefix}-#{$state} {
+        @content;
+      }
+    }
+  }
+  @else {
+    @at-root {
+      &#{$modifier-separator}#{$prefix}-#{$state} {
+        @content;
+      }
+    }
+  }
+}
+@mixin state($args...) {
+  @include is($args...) { @content; }
+}
+
+////////////////////////////////////////////////////////////////////////
+//                             Qualifiers                             //
+////////////////////////////////////////////////////////////////////////
+
+/// Qualify a selector with another selector to increase specificity
+/// ---
+/// @param {String} $qualifier
+/// ---
+/// @example
+/// // Qualify element with a class:
+/// button {
+///   @include when-is(.large) { ... } // -> button.large {...}
+/// }
+/// @example
+/// // Qualify class when a certain element:
+/// .button {
+///   @include when-is(a) { ... } // -> a.button {...}
+/// }
+/// ---
+/// @alias qualify
+/// ---
+@mixin when-is($qualifier) {
+  @at-root #{selector-unify(&, $qualifier)} {
+    @content;
+  }
+}
+
+@mixin qualify($arg...) {
+  @include when-is($args...) { @content; }
+}

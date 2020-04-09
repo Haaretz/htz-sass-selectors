@@ -1,0 +1,9 @@
+{
+  "name": "@haaretz/sass-selectors",
+  "version": "1.0.0",
+  "description": "Helpers for manipulating selectors in Sass",
+  "main": "index.scss",
+  "author": "TxHawks",
+  "license": "MIT",
+  "private": false
+}
