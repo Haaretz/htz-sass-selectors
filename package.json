@@ -9,5 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/Haaretz/htz-sass-selectors.git"
   },
-  "private": false
+  "publishConfig": {
+    "access": "public"
+  }
 }
