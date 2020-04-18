@@ -33,33 +33,33 @@ yarn install --save-dev @haaretz/css-selectors
 `@haaretz/sass-selectors` exposes the following configuration variables:
 
 #### `$selector-prefix`
-The prefix added to classes and custom properties
-**type:** `string`
-**default:** `''`
+The prefix added to classes and custom properties  
+**type:** `string`  
+**default:** `''`  
 
 
 #### `$element-separator`
-The separator used for BEM child elements
-**type:** `string`
-**default:** `'__'`
+The separator used for BEM child elements  
+**type:** `string`  
+**default:** `'__'`  
 
 #### `$modifier-separator`
-The separator used for BEM modifiers
-**type:** `string`
+The separator used for BEM modifiers  
+**type:** `string`  
 **default:** `'--'`
 
 #### `$state-prefix`
-The default prefix for state classes
-**type:** `string`
+The default prefix for state classes  
+**type:** `string`  
 **default:** `'is'`
 
 #### `$qualify-state`
 Should state classes be added as qualifiers like in SMACSS
 (e.g., `.base-class.is-state`) this increasing specificity
 or as a single class like in classic BEM (e.g. `.base-class--is-state`)
-thus retaining flatters specificity.
-**type:** `boolean`
-**default:** `true`
+thus retaining flatters specificity.  
+**type:** `boolean`  
+**default:** `true`  
 
 
 ### Custom Property Helpers
@@ -67,11 +67,11 @@ thus retaining flatters specificity.
 #### `create-var`
 Create custom properties that are prefixed to avoid name
 collusion but without the syntactic verbosity of repeatedly doing:
-`--#{$selector-prefix}variable-name: variable-value;`
-**Type:** `mixin`
-**Params:**
-  `$name` (`string`): The custom-property's unprefixed name
-  `$value` (`any`): The value assigned to the custom-property
+`--#{$selector-prefix}variable-name: variable-value;`  
+**Type:** `mixin`  
+**Params:**  
+  `$name` (`string`): The custom-property's unprefixed name  
+  `$value` (`any`): The value assigned to the custom-property  
 **Example:**
 ```scss
 .foo {
@@ -84,12 +84,12 @@ collusion but without the syntactic verbosity of repeatedly doing:
 #### `use-var`
 Use a prefixed custom properties to avoid name collusion
 but without the syntactic verbosity of repeatedly doing:
-color: var(--#{$selector-prefix}color1);
-**Type:** `function`
-**Params:**
+color: var(--#{$selector-prefix}color1);  
+**Type:** `function`  
+**Params:**  
   `$name` ('string'): The _unprefixed_ name of the variable to use.
-  Usually one defined using the `css-var` mixin.
-**Return:** (`string`) Prefixed custom property useage
+  Usually one defined using the `css-var` mixin.  
+**Return:** (`string`) Prefixed custom property usage   
 **Example:**
 ```scss
 .foo {
@@ -108,12 +108,12 @@ collusion but without the syntactic verbosity of repeatedly doing:
 .#{$selector-prefix}name { ... }.
 
 Can be used to create any class, but designed chiefly to be used as
-an idiomatic way to create `BEM` block rulesets (hense, aliased as `b`)
-**Alias:** `b`
-**Type:** `mixin`
-**Params:**
-  `$names` (`arglist`): Unprefixed class name(s) to create the selector from
-**Examples:**
+an idiomatic way to create `BEM` block rulesets (hense, aliased as `b`)   
+**Alias:** `b`   
+**Type:** `mixin`   
+**Params:**   
+  `$names` (`arglist`): Unprefixed class name(s) to create the selector from   
+**Examples:**   
 ```scss
 // Single class:
 @include class(foo) { color: red; }
@@ -133,12 +133,12 @@ an idiomatic way to create `BEM` block rulesets (hense, aliased as `b`)
 
 #### `element`
 Idiomatically create BEM element rulesets. Can be nested inside
-modifiers or other elements to infinite depth.
-**Alias:** `e`
-**Type:** `mixin`
+modifiers or other elements to infinite depth.   
+**Alias:** `e`   
+**Type:** `mixin`   
 **Params:**
-  `$name` (`string`): The element's name
-**Example:**
+  `$name` (`string`): The element's name   
+**Example:**   
 ```scss
 @include b(foo) {
   ...
@@ -148,12 +148,12 @@ modifiers or other elements to infinite depth.
 
 #### `modifier`
 Idiomatically create BEM modifier rulesets. Can be nested inside
-elements or other modifiers to infinite depth
-**Alias:** `m`
-**Type:** `mixin`
-**Params:**
-  `$name` (`string`): The modifier's name
-**Example:**
+elements or other modifiers to infinite depth   
+**Alias:** `m`   
+**Type:** `mixin`   
+**Params:**   
+  `$name` (`string`): The modifier's name   
+**Example:**   
 ```scss
 @include b(foo) {
   ...
@@ -162,19 +162,19 @@ elements or other modifiers to infinite depth
 ```
 
 #### `is`
-Idiomatically create state qualifier classes of a parent selector
-**Alias:** `state`
-**Type:** `mixin`
-**Params:**
-  `$state` (`string`): The represented state
+Idiomatically create state qualifier classes of a parent selector   
+**Alias:** `state`   
+**Type:** `mixin`   
+**Params:**   
+  `$state` (`string`): The represented state   
   `$prefix` (`string`): The string to use when prefixing `$state`,
   e.g, `@include is(open, is) { ... }` will create an `.is-open`
-  qualifier. default: `$state-prfix`.
+  qualifier. default: `$state-prfix`.   
   `$qualify` (`boolean`): Should state classes be added as qualifiers
   like in SMACSS (e.g., `.base-class.is-state`) thus increasing
   specificity or as a single class like in classic BEM (e.g.
-  `.base-class--is-state`) thus retaining flatter specificity.
-**Example:**
+  `.base-class--is-state`) thus retaining flatter specificity.   
+**Example:**   
 ```scss
 html {
   ...
@@ -186,12 +186,12 @@ html {
 ### Qualifiers
 
 #### `when-is`
-Qualify a selector with another selector to increase specificity
-**Alias:** `qualify`
-**Type:** `mixin`
-**Params:**
-  `$qualifier` (`string`)
-**Examples:**
+Qualify a selector with another selector to increase specificity   
+**Alias:** `qualify`   
+**Type:** `mixin`   
+**Params:**   
+  `$qualifier` (`string`)   
+**Examples:**   
 ```scss
 // Qualify element with a class:
 button {
